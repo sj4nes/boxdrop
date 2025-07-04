@@ -6,9 +6,9 @@ use tracing::{debug, warn};
 
 /// Dropbox API v2 client for file operations
 pub struct DropboxClient {
-    client: Client,
+    pub(crate) client: Client,
     access_token: String,
-    base_url: String,
+    pub(crate) base_url: String,
 }
 
 /// Dropbox API error response
