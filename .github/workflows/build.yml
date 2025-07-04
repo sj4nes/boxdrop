@@ -1,0 +1,47 @@
+name: Build Linux Binary
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install cross
+      uses: taiki-e/install-action@cross
+      
+    - name: Build for x86_64-unknown-linux-musl
+      run: cross build --target x86_64-unknown-linux-musl --release
+      
+    - name: Upload binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: boxdrop-sync-daemon-linux
+        path: target/x86_64-unknown-linux-musl/release/boxdrop-sync-daemon
+        retention-days: 30
+        
+    - name: Create release asset
+      if: github.event_name == 'release'
+      run: |
+        cp target/x86_64-unknown-linux-musl/release/boxdrop-sync-daemon boxdrop-sync-daemon-linux
+        tar -czf boxdrop-sync-daemon-linux.tar.gz boxdrop-sync-daemon-linux
+        
+    - name: Upload release asset
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./boxdrop-sync-daemon-linux.tar.gz
+        asset_name: boxdrop-sync-daemon-linux.tar.gz
+        asset_content_type: application/gzip 
