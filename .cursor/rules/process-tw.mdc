@@ -1,0 +1,83 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Task List Management with Taskwarrior
+
+Guidelines for managing and tracking PRD completion using Taskwarrior, including
+automated journaling of relevant files as tasks are processed.
+
+---
+
+## Task Implementation
+- **Look for your callsign** If you weren't given a callsign, e.g. "What are we doing now, <CALLSIGN>?", choose a cartoon character's name that hasn't been used before in the `task list`.  This is _your name_ and you use it to identify your work.
+- **One task at a time:** Check for active task.  Use `task active` to see if there is a task already in progress with your callsign.  If there are multiple active tasks without any callsign, choose one and add your callsign to it to claim it.
+
+- **Find the next task with `task ready`:** Choose the highest priority task and
+  `task start` it.  Provide the user a tactical plan that supports the task to get approval.
+
+- Do **NOT** begin work on the active task until you ask the user for permission
+  and they say “yes” or "y".
+
+- **Completion Protocol:**
+
+1. When you finish a **sub-task**, confirm by running its specific unit or e2e tests. If there are defects, resolve them until all tests pass.
+2. When an active task is completed and all tests are green, immediately:
+    - Annotate the task with a summary of the performed work.
+    - Mark the task as done. `task <task_id> done`
+    - Write a commit message referencing the task description that was just performed.
+
+---
+
+## Task and Working Journal Maintenance
+
+1. **Update Taskwarrior as you work:**
+    - Mark active tasks as completed using Taskwarrior commands.
+    - Add new tasks or subtasks in Taskwarrior as they emerge using the dependencies feature:
+        - `task add <description> project:<project_name> parent:<parent_task_id>`
+2. **Maintain the “Relevant Task Files Journal”:**
+    - For every file created or modified during a task, append an entry to a dedicated journal file (e.g., `task_files_journal.md`):
+        - Include:
+            - File path
+            - One-line description of its purpose
+            - Timestamp
+    - Example journal entry:
+
+```
+- [2025-06-21 20:34 CDT] src/components/Button.tsx - Created new button component for UI consistency
+```
+
+
+---
+
+## AI Instructions
+
+When working with Taskwarrior task lists, the AI must:
+
+1. **Regularly update Taskwarrior** after finishing any significant work:
+    - Mark each finished sub-task as `done`.
+    - Mark parent tasks as `done` when all subtasks are complete.
+2. **Add newly discovered tasks** to Taskwarrior as needed.
+3. **Keep the “Relevant Task Files Journal”** accurate and up to date:
+    - Append an entry for every file created or modified, referencing the relevant Taskwarrior task.
+4. **Conditional** When you find that new work is being captured during development, take a few cycles to groom and organize all of the tasks in Taskwarrior, adding annotations of key insights that will assist in work. Tasks are often the "WHAT" of potential work, and the annotations of tasks are the "WHY" and "HOW" for their target tasks.
+5. **Before starting work**, use Taskwarrior to check which sub-task is next:
+    - `task next`
+6. **After implementing a task**:
+    - Update Taskwarrior status.
+    - Update the task files journal for the task by using annotations.
+    - Resume the protocol.
+
+---
+
+**Tips:**
+
+- Use Taskwarrior’s annotations and tags to add extra context to tasks if needed.
+- Regularly sync Taskwarrior if using it in a team environment.
+- Use Taskwarrior reports and filters to review progress.
+
+---
+
+**Summary:**
+All task management, completion, and tracking are now handled via Taskwarrior. The “Relevant Files” section is replaced by a “Relevant Task Files Journal” that is updated as you process tasks, ensuring a robust, auditable workflow.

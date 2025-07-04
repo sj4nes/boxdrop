@@ -1,0 +1,85 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Instructions for Translating PRD Tasks into Taskwarrior Tasks
+
+### 1. Set a Consistent Project Name
+
+- Choose a clear, descriptive project name based on the PRD or feature (e.g., `user-profile-editing`).
+- Use this project name for all related tasks to ensure grouping and easy filtering.
+- Example:
+
+```
+task add "Implement user profile editing UI" project:user-profile-editing
+```
+
+
+### 2. Add Parent Tasks
+
+- For each high-level (parent) task from the PRD task list, create a Taskwarrior task with the chosen project name.
+- Assign a unique description that matches the parent task title.
+- Example:
+
+```
+task add "Design user profile editing UI" project:user-profile-editing
+```
+
+
+### 3. Add Sub-Tasks with Dependencies
+
+- For each sub-task, create a Taskwarrior task with the same project name.
+- Use the `depends:` attribute to link sub-tasks to their parent task or to other sub-tasks as required.
+- To find the parent task’s ID, use:
+
+```
+task list project:user-profile-editing
+```
+
+- Then, add a sub-task with a dependency:
+
+```
+task add "Create form validation logic" project:user-profile-editing depends:<parent_task_id>
+```
+
+
+### 4. Organize Dependencies
+
+- Ensure each sub-task that must be completed before another is linked using the `depends:` attribute.
+- For sequential sub-tasks, chain dependencies accordingly.
+- Example:
+
+```
+task add "Implement backend API" project:user-profile-editing depends:<design_task_id>
+task add "Integrate frontend with API" project:user-profile-editing depends:<backend_api_task_id>
+```
+
+
+### 5. Review and Adjust
+
+- After adding all tasks, review the dependency graph:
+
+```
+task info <task_id>
+```
+
+- Adjust dependencies as needed to reflect the correct order and relationships.
+
+
+### 6. Example Workflow
+
+| PRD Task List Item | Taskwarrior Command Example |
+| :-- | :-- |
+| 1.0 Design UI | `task add "Design user profile editing UI" project:user-profile-editing` |
+| 1.1 Create wireframes | `task add "Create wireframes" project:user-profile-editing depends:<design_ui_id>` |
+| 2.0 Implement backend API | `task add "Implement backend API" project:user-profile-editing depends:<design_ui_id>` |
+| 2.1 Write API tests | `task add "Write API tests" project:user-profile-editing depends:<backend_api_id>` |
+
+### 7. Tips for Consistency
+
+- Always use the same project name for all related tasks.
+- Use clear, descriptive task descriptions matching the PRD.
+- Regularly update dependencies if the task structure changes.
+
+By following these steps, you ensure that your Taskwarrior tasks mirror the PRD structure, maintain a consistent project grouping, and have well-organized dependencies for efficient tracking and execution.
